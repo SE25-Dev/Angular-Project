@@ -1,0 +1,33 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #e9eef5;
+  border-bottom: 2px solid #cdd5e0;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1c3b57;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  background-color: #3f6292;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #547ba8;
+}
