@@ -2,7 +2,13 @@
   <div class="logo">ZmitacV2</div>
 
   <div class="actions">
-    <button class="btn">Login</button>
-    <button class="btn">Register</button>
+    <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+      <button class="btn" [routerLink]="['/login']">Login</button>
+      <button class="btn" [routerLink]="['/register']">Register</button>
+    </ng-container>
+
+    <ng-template #loggedIn>
+      <button class="btn" (click)="logout()">Logout</button>
+    </ng-template>
   </div>
 </header>
