@@ -1,0 +1,27 @@
+<main><form (ngSubmit)="login()">
+  <div>
+    <label>Username</label>
+    <input
+      type="text"
+      [(ngModel)]="username"
+      name="username"
+      required
+    />
+  </div>
+
+  <div>
+    <label>Password</label>
+    <input
+      type="password"
+      [(ngModel)]="password"
+      name="password"
+      required
+    />
+  </div>
+
+  <button type="submit">Login</button>
+
+  <p *ngIf="errorMessage" style="color:red">
+    {{ errorMessage }}
+  </p>
+</form></main>
