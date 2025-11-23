@@ -1,1 +1,18 @@
-<p>courses works!</p>
+<div class="container">
+  <div class="header-top">
+    <h2 class="title">Courses</h2>
+    <button class="add-button">Add Course</button>
+  </div>
+  <div class="courses-header">
+    <span class="col-image"></span> <span class="col-name">Name</span>
+    <span class="col-duration">Duration</span>
+  </div>
+  <ul class="courses-list">
+    <li class="course-item" *ngFor="let course of courses">
+      <div class="course-image"></div>
+      <div class="course-name">{{ course.title }}</div>
+      <div class="course-duration">{{ course.duration }}</div>
+      <mat-icon style="padding-right: 1vw">arrow_forward</mat-icon>
+    </li>
+  </ul>
+</div>
