@@ -13,10 +13,10 @@ export const routes: Routes = [
   {
     path: 'courses',
     component: CoursesComponent,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
 
   { path: '', component: HomeComponent },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
