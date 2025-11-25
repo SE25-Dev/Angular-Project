@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -39,7 +39,7 @@ export class AuthService {
     } catch (err) {
       return null;
     }
-}
+  }
 
   // -------- API CALLS --------
 
@@ -50,32 +50,38 @@ export class AuthService {
     password: string;
     email?: string;
   }): Observable<TokenResponse> {
-    return this.http.post<TokenResponse>(`${this.baseUrl}/auth/register`, data).pipe(
-      map((res) => {
-        if (res.token) this.saveToken(res.token);
-        return res;
-      })
-    );
+    return this.http
+      .post<TokenResponse>(`${this.baseUrl}/auth/register`, data)
+      .pipe(
+        map((res) => {
+          if (res.token) this.saveToken(res.token);
+          return res;
+        }),
+      );
   }
 
   public login(username: string, password: string): Observable<TokenResponse> {
-    return this.http.post<TokenResponse>(`${this.baseUrl}/auth/login`, { username, password }).pipe(
-      map((res) => {
-        console.log(res);
-        if (res.token) this.saveToken(res.token);
-        return res;
-      })
-    );
+    return this.http
+      .post<TokenResponse>(`${this.baseUrl}/auth/login`, { username, password })
+      .pipe(
+        map((res) => {
+          console.log(res);
+          if (res.token) this.saveToken(res.token);
+          return res;
+        }),
+      );
   }
 
   public updateToken(): Observable<TokenResponse> {
-    return this.http.post<TokenResponse>(`${this.baseUrl}/auth/update_token`, {}).pipe(
-      map((res) => {
-        if (res.token) this.saveToken(res.token);
+    return this.http
+      .post<TokenResponse>(`${this.baseUrl}/auth/update_token`, {})
+      .pipe(
+        map((res) => {
+          if (res.token) this.saveToken(res.token);
 
-        return res;
-      })
-    );
+          return res;
+        }),
+      );
   }
 
   public logout(): void {
@@ -89,24 +95,27 @@ export class AuthService {
   }
 
   public isLoggedIn(): boolean {
-  const token = localStorage.getItem('userToken');
-  if (!token) return false;
+    const token = localStorage.getItem('userToken');
+    if (!token) return false;
 
-  try {
-    // Fix Base64URL
-    const base64 = token.split('.')[1]
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
-    // Add padding if necessary
-    const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+    try {
+      // Fix Base64URL
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      // Add padding if necessary
+      const padded = base64.padEnd(
+        base64.length + ((4 - (base64.length % 4)) % 4),
+        '=',
+      );
 
-    const payload = JSON.parse(atob(padded));
-    console.log('Decoded payload:', payload);
+      const payload = JSON.parse(atob(padded)); // atob does not handle utf-8
+      if (isDevMode()) {
+        console.log('Decoded payload:', payload);
+      }
 
-    return payload.exp && Number(payload.exp) > Date.now() / 1000;
-  } catch (err) {
-    console.error('Token decode error:', err);
-    return false;
+      return payload.exp && Number(payload.exp) > Date.now() / 1000;
+    } catch (err) {
+      console.error('Token decode error:', err);
+      return false;
+    }
   }
-}
 }
