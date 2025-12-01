@@ -3,8 +3,11 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { CoursesComponent } from './courses/courses.component';
+import { CourseRequestCreatorComponent } from './course-request-creator/course-request-creator.component';
+import { CourseCreationRequestsComponent } from './course-creation-requests/course-creation-requests.component';
 
 import { authGuard } from './auth.guard';
+import { isSuperuserGuard } from './is-superuser.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -15,7 +18,16 @@ export const routes: Routes = [
     component: CoursesComponent,
     canActivate: [authGuard],
   },
-
+  {
+    path: 'course-request-creator',
+    component: CourseRequestCreatorComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'course-creation-requests',
+    component: CourseCreationRequestsComponent,
+    canActivate: [isSuperuserGuard],
+  },
   { path: '', component: HomeComponent },
 
   { path: '**', redirectTo: '' },
