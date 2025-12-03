@@ -5,8 +5,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { appConfig } from './app/app.config';
 import { provideRouter } from '@angular/router';
 
-bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routes), provideAnimationsAsync()],
-}).catch((err) => console.error(err));
-
-bootstrapApplication(AppComponent, appConfig);
+bootstrapApplication(AppComponent, appConfig).catch((err) =>
+  console.error(err),
+);

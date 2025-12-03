@@ -1,0 +1,134 @@
+.container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #222;
+    }
+  }
+
+  .courses-header {
+    display: flex;
+    width: 100%;
+    padding: 10px 0;
+    font-weight: 700;
+    border-bottom: 2px solid #dadada;
+    font-size: 14px;
+    color: #333;
+
+    span {
+      text-align: left;
+    }
+
+    /* Column widths */
+    .col-title {
+      flex: 2;
+    }
+
+    .col-description {
+      flex: 3;
+    }
+
+    .col-password {
+      flex: 1;
+    }
+
+    .col-requester {
+      flex: 2;
+    }
+
+    .col-actions {
+      flex: 1;
+      text-align: right;
+    }
+  }
+
+  .courses-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+
+    .course-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      transition: background 0.2s;
+      width: 100%;
+
+      &:hover {
+        background-color: #f2f4fd;
+      }
+
+      .course-title {
+        flex: 2;
+        font-size: 16px;
+        font-weight: 600;
+        color: #222;
+      }
+
+      .course-description {
+        flex: 3;
+        font-size: 14px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .course-password {
+        flex: 1;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .course-requester {
+        flex: 2;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .course-actions {
+        flex: 1;
+        text-align: right;
+
+        button {
+          padding: 8px 12px;
+          margin-left: 5px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          transition: background-color 0.2s ease-in-out;
+
+          &:first-child {
+            background-color: #28a745;
+            color: #fff;
+            &:hover {
+              background-color: #218838;
+            }
+          }
+
+          &:last-child {
+            background-color: #dc3545;
+            color: #fff;
+            &:hover {
+              background-color: #c82333;
+            }
+          }
+        }
+      }
+    }
+  }
+}

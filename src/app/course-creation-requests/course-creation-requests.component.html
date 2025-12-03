@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="header-top">
+    <h2 class="title">Course Creation Requests</h2>
+  </div>
+  <div class="courses-header">
+    <span class="col-title">Title</span>
+    <span class="col-description">Description</span>
+    <span class="col-password">Password</span>
+    <span class="col-requester">Requester</span>
+    <span class="col-actions">Actions</span>
+  </div>
+  <ul class="courses-list">
+    <li class="course-item" *ngFor="let request of courseRequests">
+      <div class="course-title">{{ request.courseTitle }}</div>
+      <div class="course-description">{{ request.courseDescription }}</div>
+      <div class="course-password">{{ request.coursePassword }}</div>
+      <div class="course-requester">
+        {{ request.requester?.firstName }} {{ request.requester?.lastName }} ({{ request.requester?.username }})
+      </div>
+      <div class="course-actions">
+        <button (click)="acceptRequest(request)">Accept</button>
+        <button (click)="rejectRequest(request)">Reject</button>
+      </div>
+    </li>
+  </ul>
+  <p *ngIf="courseRequests.length === 0">No course creation requests found.</p>
+</div>
