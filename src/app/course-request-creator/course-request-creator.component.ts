@@ -9,7 +9,7 @@ import { CourseCreationService } from '../services/course-creation.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './course-request-creator.component.html',
-  styleUrl: './course-request-creator.component.scss'
+  styleUrl: './course-request-creator.component.scss',
 })
 export class CourseRequestCreatorComponent {
   title: string = '';
@@ -18,7 +18,10 @@ export class CourseRequestCreatorComponent {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private router: Router, private courseCreationService: CourseCreationService) {}
+  constructor(
+    private router: Router,
+    private courseCreationService: CourseCreationService,
+  ) { }
 
   createCourseRequest() {
     this.errorMessage = '';
@@ -29,19 +32,24 @@ export class CourseRequestCreatorComponent {
       return;
     }
 
-    this.courseCreationService.createCourseRequest({
-      title: this.title,
-      description: this.description,
-      coursePassword: this.password,
-    }).subscribe({
-      next: () => {
-        this.successMessage = 'Course request submitted successfully!';
-        this.router.navigate(['/courses']); // Redirect to courses list or a confirmation page
-      },
-      error: (err) => {
-        this.errorMessage = 'Failed to submit course request.';
-        console.error(err);
-      }
-    });
+    this.courseCreationService
+      .createCourseRequest({
+        title: this.title,
+        description: this.description,
+        coursePassword: this.password,
+      })
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Course request submitted successfully!';
+          // TODO: Replace this with MatSnackBar or another notification method
+          setTimeout(() => {
+            this.router.navigate(['/courses']); // Redirect to courses list or a confirmation page
+          }, 2000);
+        },
+        error: (err) => {
+          this.errorMessage = 'Failed to submit course request.';
+          console.error(err);
+        },
+      });
   }
 }

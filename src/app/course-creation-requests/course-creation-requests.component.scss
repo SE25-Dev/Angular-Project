@@ -8,7 +8,7 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   color: white;
-  font-family: 'Poppins','Inter', sans-serif;
+  font-family: "Poppins", "Inter", sans-serif;
 }
 
 .header-top {
@@ -43,7 +43,7 @@
   display: grid;
   grid-template-columns: 150px 1fr 100px 180px 150px; /* Adjusted columns for title, description, password, requester, actions */
   align-items: center;
-  padding: 12px 0;
+  padding: 12px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: 0.2s;
 }

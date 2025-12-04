@@ -3,7 +3,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Poppins','Inter', sans-serif;
+  font-family: "Poppins", "Inter", sans-serif;
 }
 
 form {
@@ -11,7 +11,7 @@ form {
   padding: 40px;
   width: 360px;
   border-radius: 30px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   color: white;
 }
@@ -28,34 +28,34 @@ form label {
   display: block;
   margin-bottom: 6px;
   font-size: 15px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 form input,
 form textarea {
   width: 100%;
-  padding: 12px 14px;
+  padding: 10px 5px;
   margin-bottom: 22px;
   border: none;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   color: white;
   border-radius: 8px;
   outline: none;
   transition: 0.2s;
-  font-family: 'Poppins','Inter', sans-serif;
+  font-family: "Poppins", "Inter", sans-serif;
   resize: vertical; /* Allow vertical resizing for textarea */
 }
 
 form input::placeholder,
 form textarea::placeholder {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 /* Focus animation */
 form input:focus,
 form textarea:focus {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid #16d4c3;
 }
 
@@ -82,4 +82,12 @@ form p {
   margin-top: 15px;
   font-size: 14px;
   text-align: center;
+}
+
+.error {
+  color: #ba1a1a;
+}
+
+.success {
+  color: #8fde85;
 }

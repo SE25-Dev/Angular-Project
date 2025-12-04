@@ -1,5 +1,15 @@
 <header class="header">
-  <div class="logo">ZmitacV2</div>
+  <div class="actions">
+    <a class="logo" [routerLink]="['/']">ZmitacV2</a>
+    <button
+      *ngIf="authService.isLoggedIn()"
+      class="btn"
+      [routerLink]="['/courses']"
+    >
+      Courses
+    </button>
+    <button class="btn disabled">Sections</button>
+  </div>
 
   <div class="actions">
     <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
@@ -8,6 +18,7 @@
     </ng-container>
 
     <ng-template #loggedIn>
+      <button class="btn disabled"><mat-icon>notifications</mat-icon></button>
       <button class="btn" (click)="logout()">Logout</button>
     </ng-template>
   </div>
