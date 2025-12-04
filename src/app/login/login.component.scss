@@ -3,7 +3,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins','Inter', sans-serif;
 }
 
 form {
@@ -50,6 +50,7 @@ form input {
   border-radius: 8px;
   outline: none;
   transition: 0.2s;
+  font-family: 'Poppins','Inter', sans-serif;
 }
 
 form input::placeholder {

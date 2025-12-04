@@ -1,14 +1,15 @@
 main {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins','Inter', sans-serif;
 }
 
 form {
   background: rgba(10, 20, 35, 0.85);
   padding: 40px;
+  margin-top:100px;
   width: 380px;
   border-radius: 30px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
@@ -26,7 +27,7 @@ form h1 {
 
 form h2 {
   text-align: center;
-  margin-top: -10px;
+  margin-top: 0px;
   font-size: 22px;
   font-weight: 600;
   color: #16d4c3;
@@ -34,7 +35,7 @@ form h2 {
 
 form label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   font-size: 15px;
   color: rgba(255,255,255,0.75);
 }
@@ -42,13 +43,14 @@ form label {
 form input {
   width: 100%;
   padding: 12px 14px;
-  margin-bottom: 22px;
+  margin-bottom: 15px;
   border: none;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   background: rgba(255,255,255,0.06);
   color: white;
   border-radius: 8px;
   outline: none;
+  font-family: 'Poppins','Inter', sans-serif;
   transition: 0.2s;
 }
 
@@ -68,7 +70,7 @@ form button {
   border: none;
   border-radius: 12px;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 10px;

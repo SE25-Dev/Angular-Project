@@ -1,0 +1,85 @@
+main {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins','Inter', sans-serif;
+}
+
+form {
+  background: rgba(10, 20, 35, 0.85);
+  padding: 40px;
+  width: 360px;
+  border-radius: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  color: white;
+}
+
+form h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #16d4c3;
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+  font-family: 'Poppins','Inter', sans-serif;
+  resize: vertical; /* Allow vertical resizing for textarea */
+}
+
+form input::placeholder,
+form textarea::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+/* Focus animation */
+form input:focus,
+form textarea:focus {
+  background: rgba(255,255,255,0.12);
+  border-bottom: 1px solid #16d4c3;
+}
+
+form button {
+  width: 100%;
+  padding: 14px 0;
+  background: linear-gradient(135deg, #0cd3c4, #00a59e);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.25s;
+}
+
+form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 200, 180, 0.25);
+}
+
+form p {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+}
