@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../services/auth.service';
+import { CoursesService } from '../services/courses.service';
 import { RouterLink } from '@angular/router';
+import { Course } from '../models/course';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-courses',
@@ -11,33 +14,26 @@ import { RouterLink } from '@angular/router';
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss'],
 })
-export class CoursesComponent implements OnInit {
-  courses = [
-    { title: 'Angular Basics', duration: 'one semester', status: 'active' },
-    {
-      title: 'Sofware engeneering',
-      duration: 'one semester',
-      status: 'active',
-    },
-    { title: 'Data bases', duration: 'one semester', status: 'inactive' },
-
-    {
-      title: 'Laravel API Development',
-      duration: 'one semester',
-      status: 'active',
-    },
-    { title: 'React Fundamentals', duration: 'one semester', status: 'active' },
-    { title: 'Java Spring Boot', duration: 'one semester', status: 'inactive' },
-  ];
-
+export class CoursesComponent implements OnInit, OnDestroy {
+  courses: Course[] = [];
   isSuperuser: boolean = false;
+  private coursesSubscription: Subscription | undefined;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private coursesService: CoursesService) {}
 
   ngOnInit(): void {
     const userDetails = this.authService.getUserDetails();
     if (userDetails) {
       this.isSuperuser = userDetails.superuser;
     }
+
+    this.coursesSubscription = this.coursesService.courses$.subscribe((courses) => {
+      this.courses = courses;
+    });
+    this.coursesService.loadCourses().subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.coursesSubscription?.unsubscribe();
   }
 }
