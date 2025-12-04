@@ -16,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'courses',
     component: CoursesComponent,
-    canActivate: [authGuard],
+   // canActivate: [authGuard],
   },
   {
     path: 'course-request-creator',

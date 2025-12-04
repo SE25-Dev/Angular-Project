@@ -1,7 +1,27 @@
-h1 {
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 80px); 
+}
+
+.home-card {
+  background: rgba(10, 20, 35, 0.85);
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   text-align: center;
-  margin-top: 40px;
-  color: #2b4a68;
-  font-size: 32px;
-  font-weight: 600;
+  max-width: 480px;
+  width: 90%;
+}
+
+.home-card h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.home-card p {
+  font-size: 1.2rem;
+  color: #a2a2a2;
 }

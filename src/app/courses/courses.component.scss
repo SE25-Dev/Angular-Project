@@ -1,110 +1,113 @@
+
 .container {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px 30px;
+  margin-top: 200px;
+  background: rgba(10, 20, 35, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-family: 'Poppins','Inter', sans-serif;
+}
 
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
 
-    .title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #222;
-    }
-    .control-buttons{
-      display:flex;
-      align-items:flex-end;
-      .control-button {
-        padding: 12px 20px;
-        background-color: #007acc;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: background-color 0.2s ease-in-out;
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #16d4c3;
+}
 
-        &:hover {
-          background-color: #005fa3;
-        }
-        &.requests-button{
-          margin-left:10px;
-        }
-      }
-    }
-  }
+.control-buttons {
+  display: flex;
+  gap: 12px;
+}
 
-  .courses-header {
-    display: flex;
-    width: 100%;
-    padding: 10px 0;
-    font-weight: 700;
-    border-bottom: 2px solid #dadada;
-    font-size: 14px;
-    color: #333;
+.control-button {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #0cd3c4, #00a59e);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
 
-    span {
-      text-align: left;
-    }
+.control-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 200, 180, 0.2);
+}
 
-    /* Column widths */
-    .col-image {
-      flex: 0 0 90px;
-    }
+.courses-header {
+  display: grid;
+  grid-template-columns: 60px 150px 1fr 80px; /* Adjusting for image, title, description, and button */
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
 
-    .col-name {
-      flex: 2;
-    }
+.courses-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-    .col-duration {
-      flex: 1;
-    }
-  }
+.course-item {
+  display: grid;
+  grid-template-columns: 60px 150px 1fr 80px; /* Adjusting for image, title, description, and button */
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-  .courses-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+.course-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
 
-    .course-item {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      transition: background 0.2s;
-      width: 100%;
+.course-image {
+  width: 50px;
+  height: 50px;
+  background: rgba(22, 212, 195, 0.3);
+  border-radius: 10px;
+}
 
-      &:hover {
-        background-color: #f2f4fd;
-      }
+.course-name {
+  font-size: 16px;
+  font-weight: 500;
+}
 
-      .course-image {
-        width: 50px;
-        height: 50px;
-        background-color: #e3e3e3;
-        border-radius: 50%;
-        margin-right: 15px;
-        flex: 0 0 60px;
-      }
+.course-duration {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
 
-      /* Course columns */
-      .course-name {
-        flex: 2;
-        font-size: 16px;
-        font-weight: 600;
-        color: #222;
-      }
+.enroll-button {
+  width: auto; /* Allow button to size naturally */
+  padding: 6px 10px; /* Adjusted padding */
+  background: linear-gradient(135deg, #0cd3c4, #00a59e);
+  border: none;
+  border-radius: 6px; /* Adjusted border-radius */
+  color: white;
+  font-size: 12px; /* Adjusted font-size */
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
 
-      .course-duration {
-        flex: 1;
-        font-size: 14px;
-        color: #666;
-      }
-    }
-  }
+.enroll-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 200, 180, 0.2);
 }
