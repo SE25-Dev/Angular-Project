@@ -61,16 +61,6 @@
   padding: 0;
 }
 
-.course-item {
-  display: grid;
-  grid-template-columns: 60px 150px 1fr 80px; /* Adjusting for image, title, description, and button */
-  align-items: center;
-  padding: 12px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  transition: 0.2s;
-}
-
 .course-item:hover {
   background: rgba(255, 255, 255, 0.05);
   transform: translateY(-1px);
@@ -109,4 +99,88 @@
 .enroll-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0, 200, 180, 0.2);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal {
+  background: #0b1628;
+  padding: 25px;
+  border-radius: 12px;
+  width: 320px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.modal h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 18px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  border-radius: 8px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #00a59e;
+  color: white;
+  cursor: pointer;
+}
+
+.modal-buttons .cancel {
+  background: #777;
+}
+
+.courses-header {
+  display: grid;
+  grid-template-columns: 60px 150px 1fr 150px 80px; /* added teachers column */
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.course-teachers {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.teacher-item {
+  line-height: 1.3;
+}
+
+.teacher-item span {
+  font-weight: 600;
+  color: #16d4c3; /* Highlight HeadTeacher */
+}
+
+.course-item {
+  display: grid;
+  grid-template-columns: 60px 150px 1fr 150px 80px; /* must match header */
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
 }

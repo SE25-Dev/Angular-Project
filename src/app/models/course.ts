@@ -6,4 +6,14 @@ export interface Course {
   statusId: number;
   createdAt: string;
   updatedAt: string;
+
+  isUserEnrolled?: boolean; 
+  teachers: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    username: string;
+    email: string;
+    role: 'headteacher' | 'teacher';
+  }[];
 }
