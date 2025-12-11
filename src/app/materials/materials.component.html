@@ -1,0 +1,60 @@
+<div class="container">
+  <h2>Materials</h2>
+  <button *ngIf="canEdit" class="add-button" (click)="openAddMaterialModal()">
+  + Add Material
+  </button>
+  <div *ngIf="materials.length > 0; else noMaterials">
+    <div *ngFor="let material of materials" class="material-item">
+      <h3>{{ material.title }}</h3>
+      <p>{{ material.description }}</p>
+
+      <div *ngIf="material.files && material.files.length > 0">
+
+        <div *ngFor="let file of material.files" class="file-item">
+          <img [src]="getFileIcon(file.type)" class="file-icon" />
+          <a (click)="downloadFile(file)">{{ file.name }}</a>
+        </div>
+      </div>
+
+      <hr />
+    </div>
+  </div>
+
+  <ng-template #noMaterials>
+    <p class="no-materials">No materials available for this course.</p>
+  </ng-template>
+
+  <!-- preload icons (hidden) -->
+  <img src="assets/icons/pdf.png" style="display:none" />
+  <img src="assets/icons/image.png" style="display:none" />
+  <img src="assets/icons/doc.png" style="display:none" />
+  <img src="assets/icons/xls.png" style="display:none" />
+  <img src="assets/icons/zip.png" style="display:none" />
+  <img src="assets/icons/file.png" style="display:none" />
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddModal">
+  <div class="modal">
+    <h3>Add Material</h3>
+
+    <input placeholder="Title" [(ngModel)]="newMaterial.title" />
+
+    <textarea
+      placeholder="Description"
+      [(ngModel)]="newMaterial.description">
+    </textarea>
+
+    <!-- Visibility Toggle -->
+    <label class="visibility-toggle">
+      <input type="checkbox" [(ngModel)]="newMaterial.visible" />
+      <span>Visible to Students</span>
+    </label>
+
+    <input type="file" (change)="onFilesSelected($event)" multiple />
+
+    <div class="modal-buttons">
+      <button (click)="submitNewMaterial()">Save</button>
+      <button class="cancel" (click)="closeAddMaterialModal()">Cancel</button>
+    </div>
+  </div>
+</div>

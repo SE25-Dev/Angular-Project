@@ -1,0 +1,15 @@
+<div class="course-header">
+  
+  <button class="toggle-button" (click)="showParticipants = !showParticipants">
+    {{ showParticipants ? 'Back to Course' : 'Participants List' }}
+  </button>
+</div>
+
+<div *ngIf="!showParticipants">
+  <app-materials [courseId]="courseId"></app-materials>
+  <app-class-sessions [courseId]="courseId"></app-class-sessions>
+</div>
+
+<div *ngIf="showParticipants">
+  <app-course-permissions [courseId]="courseId"></app-course-permissions>
+</div>

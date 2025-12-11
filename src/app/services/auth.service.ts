@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 
 import { TokenResponse } from '../models/token-response';
 import { TokenPayload } from '../models/token-payload';
+import { Course } from '../models/course';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded: any = JSON.parse(atob(payload));
-      console.log('Decoded JWT:', decoded); // <--- check if exp exists
+
       return decoded as TokenPayload;
     } catch (err) {
       return null;
@@ -94,6 +95,20 @@ export class AuthService {
     localStorage.removeItem('userToken');
   }
 
+  public isUserTeacherInCourse(course: Course): boolean {
+    const user = this.getUserDetails();
+    if (!user) return false;
+
+    return course.teachers.some(t =>
+      t.id === user.id && (t.role === 'teacher' || t.role === 'headteacher')
+    );
+  }
+
+  public getCurrentUserId(): number | null {
+    const user = this.getUserDetails();
+    return user ? user.id : null;
+  }
+
   public isLoggedIn(): boolean {
     const token = localStorage.getItem('userToken');
     if (!token) return false;
@@ -108,9 +123,7 @@ export class AuthService {
       );
 
       const payload = JSON.parse(atob(padded)); // atob does not handle utf-8
-      if (isDevMode()) {
-        console.log('Decoded payload:', payload);
-      }
+
 
       return payload.exp && Number(payload.exp) > Date.now() / 1000;
     } catch (err) {

@@ -2,20 +2,52 @@
   <div class="header-top">
     <h2 class="title">Courses</h2>
     <div class="control-buttons">
-    <button class="control-button" routerLink="/course-request-creator">Create Course</button>
-    <button *ngIf="isSuperuser" class="control-button requests-button" routerLink="/course-creation-requests">Course Requests List</button>
+      <button class="control-button" routerLink="/course-request-creator">Create Course</button>
+      <button *ngIf="isSuperuser" class="control-button requests-button" routerLink="/course-creation-requests">Course Requests List</button>
     </div>
   </div>
+
+  <!-- Courses table header -->
   <div class="courses-header">
-    <span class="col-image"></span> <span class="col-name">Name</span>
+    <span class="col-image"></span>
+    <span class="col-name">Name</span>
     <span class="col-description">Description</span>
+    <span class="col-teachers">Teachers</span>
+    <span class="col-action"></span>
   </div>
+
   <ul class="courses-list">
     <li class="course-item" *ngFor="let course of courses">
       <div class="course-image"></div>
       <div class="course-name">{{ course.title }}</div>
       <div class="course-description">{{ course.description }}</div>
-      <button class="enroll-button">Enroll</button>
+
+      <!-- Teachers column -->
+      <div class="course-teachers">
+        <div *ngFor="let teacher of course.teachers" class="teacher-item">
+          {{ teacher.firstName }} {{ teacher.lastName }}
+          <span *ngIf="teacher.role === 'headteacher'">(HeadTeacher)</span>
+        </div>
+      </div>
+
+      <button class="enroll-button"
+              (click)="onActionClick($event, course)">
+        {{ course.isUserEnrolled ? 'View' : 'Enroll' }}
+      </button>
     </li>
   </ul>
+</div>
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal">
+    <h3>Enter course password</h3>
+
+    <input type="password"
+           [(ngModel)]="enteredPassword"
+           placeholder="Course password">
+
+    <div class="modal-buttons">
+      <button (click)="confirmEnroll()">Enroll</button>
+      <button class="cancel" (click)="closeModal()">Cancel</button>
+    </div>
+  </div>
 </div>

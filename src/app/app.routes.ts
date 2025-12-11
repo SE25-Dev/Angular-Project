@@ -6,6 +6,8 @@ import { CoursesComponent } from './courses/courses.component';
 import { CourseRequestCreatorComponent } from './course-request-creator/course-request-creator.component';
 import { CourseCreationRequestsComponent } from './course-creation-requests/course-creation-requests.component';
 
+import { CourseComponent } from './course/course.component';
+
 import { authGuard } from './auth.guard';
 import { isSuperuserGuard } from './is-superuser.guard';
 
@@ -17,6 +19,11 @@ export const routes: Routes = [
     path: 'courses',
     component: CoursesComponent,
    // canActivate: [authGuard],
+  },
+  {
+    path: 'course/:id',
+    component: CourseComponent,
+    canActivate: [authGuard], // optional
   },
   {
     path: 'course-request-creator',

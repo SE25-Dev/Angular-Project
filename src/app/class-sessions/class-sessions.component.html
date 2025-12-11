@@ -1,0 +1,102 @@
+<div class="materials-container">
+  <h2>Class Sessions</h2>
+
+  <button *ngIf="canEdit" class="add-button" (click)="openAddSessionModal()">
+    Add Session
+  </button>
+
+  <div *ngIf="classSessions.length > 0; else noSessions">
+    <div *ngFor="let session of classSessions" class="material-item">
+      <h3>{{ session.topic }}</h3>
+      <p>Start: {{ session.startingDateTime | date:'short' }}</p>
+      <p>End: {{ session.endingDateTime | date:'short' }}</p>
+      <p *ngIf="!session.visible" class="not-visible">(Hidden)</p>
+
+      <!-- Role-specific actions -->
+      <div class="session-actions">
+        <!-- Student view -->
+        <ng-container *ngIf="!canEdit">
+          <!-- If raport exists, show description and files -->
+          <div *ngIf="session.raport; else submitRaportButton">
+            <p><strong>Raport Description:</strong> {{ session.raport.description }}</p>
+
+            <div *ngIf="session.raport.files && session.raport.files.length > 0">
+              <div *ngFor="let file of session.raport.files" class="file-item">
+                <img [src]="getFileIcon(file.type)" class="file-icon" />
+                <a (click)="downloadFile(file)">{{ file.name }}</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Raport button -->
+          <ng-template #submitRaportButton>
+            <button (click)="openRaportModal(session)">Submit Raport</button>
+          </ng-template>
+        </ng-container>
+
+        <!-- Teacher / Headteacher view -->
+        <ng-container *ngIf="canEdit">
+          <button (click)="viewRaports(session)">View Raports</button>
+          <button (click)="viewPresenceList(session)">Presence List</button>
+        </ng-container>
+      </div>
+
+      <hr />
+    </div>
+  </div>
+
+  <ng-template #noSessions>
+    <p class="no-materials">No class sessions available for this course.</p>
+  </ng-template>
+   <img src="assets/icons/pdf.png" style="display:none" />
+   <img src="assets/icons/image.png" style="display:none" />
+   <img src="assets/icons/doc.png" style="display:none" />
+   <img src="assets/icons/exl.png" style="display:none" />
+   <img src="assets/icons/zip.png" style="display:none" />
+   <img src="assets/icons/file.png" style="display:none" />
+</div>
+<!-- Move modal OUTSIDE the container -->
+<div class="modal-backdrop" *ngIf="showAddSessionModal">
+  <div class="modal">
+    <h3>Add Class Session</h3>
+
+    <input placeholder="Topic" [(ngModel)]="newSession.topic" />
+    <input type="datetime-local" [(ngModel)]="newSession.startingDateTime" />
+    <input type="datetime-local" [(ngModel)]="newSession.endingDateTime" />
+
+    <label class="visible-checkbox">
+      <input type="checkbox" [(ngModel)]="newSession.visible" />
+      Visible to students
+    </label>
+
+    <div class="modal-buttons">
+      <button (click)="submitNewSession()">Save</button>
+      <button class="cancel" (click)="closeAddSessionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal">
+    <h3>Submit Raport</h3>
+
+    <textarea placeholder="Description" [(ngModel)]="description"></textarea>
+
+    <div class="students-selection">
+      <h4>Select students with you:</h4>
+      <div *ngFor="let student of students">
+        <label>
+          <input type="checkbox" [value]="student.userId" (change)="toggleStudentSelection(student.userId)" />
+          {{ student.firstName }} {{ student.lastName }}
+        </label>
+      </div>
+    </div>
+
+    <input type="file" (change)="onFilesSelected($event)" multiple />
+
+    <div class="modal-buttons">
+      <button (click)="submitRaport()">Submit</button>
+      <button class="cancel" (click)="closeRaportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
