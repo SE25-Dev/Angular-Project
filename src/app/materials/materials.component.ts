@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, isDevMode, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { MaterialsService } from '../services/materials.service';
 import { Material } from '../models/material';
 import { FileMeta } from '../models/filemeta';
@@ -13,30 +14,29 @@ import { filter, forkJoin } from 'rxjs';
 @Component({
   selector: 'app-materials',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './materials.component.html',
-  styleUrl: './materials.component.scss'
+  styleUrl: './materials.component.scss',
 })
 export class MaterialsComponent implements OnInit {
-    @Input() courseId!: number;
+  @Input() courseId!: number;
 
-    materials: Material[] = [];
-    course!: Course;
-    canEdit: boolean = false;
-    showAddModal = false;
-    newMaterial = { title: '', description: '', visible: true };
-    selectedFiles = [] as File[];
+  materials: Material[] = [];
+  course!: Course;
+  canEdit: boolean = false;
+  showAddModal = false;
+  newMaterial = { title: '', description: '', visible: true };
+  selectedFiles = [] as File[];
 
+  constructor(
+    private filesService: FilesService,
+    private materialsService: MaterialsService,
+    private coursesService: CoursesService,
+    private auth: AuthService,
+  ) {}
 
-    constructor(
-      private filesService: FilesService,
-      private materialsService: MaterialsService,
-      private coursesService: CoursesService,
-      private auth: AuthService
-    ) {}
-
-    ngOnChanges(): void {
-     if (this.courseId) {
+  ngOnChanges(): void {
+    if (this.courseId) {
       this.coursesService.loadCourses().subscribe({
         next: (data) => this.loadCourse(),
       });
@@ -44,17 +44,17 @@ export class MaterialsComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   loadMaterials(): void {
     this.materialsService.getMaterials(this.courseId).subscribe({
       next: (data) => {
-       this.materials = data
-       console.log(this.materials);
+        this.materials = data;
+        if (isDevMode()) {
+          console.log(this.materials);
+        }
       },
-      error: (err) => console.error('Error fetching materials', err)
+      error: (err) => console.error('Error fetching materials', err),
     });
   }
 
@@ -73,7 +73,7 @@ export class MaterialsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error downloading file', err);
-      }
+      },
     });
   }
 
@@ -81,7 +81,10 @@ export class MaterialsComponent implements OnInit {
     this.showAddModal = true;
   }
 
-  closeAddMaterialModal() {
+  closeAddMaterialModal(event?: any) {
+    if (isDevMode()) {
+      console.log(event);
+    }
     this.showAddModal = false;
     this.newMaterial = { title: '', description: '', visible: true };
     this.selectedFiles = [];
@@ -96,38 +99,36 @@ export class MaterialsComponent implements OnInit {
       return this.createMaterial([]); // no files
     }
 
-    const uploadRequests = this.selectedFiles.map(file =>
-      this.filesService.uploadFile(file)
+    const uploadRequests = this.selectedFiles.map((file) =>
+      this.filesService.uploadFile(file),
     );
 
     forkJoin(uploadRequests).subscribe({
       next: (responses) => {
-        console.log(responses);
-        const fileIds = responses.map(r => r.id);
+        if (isDevMode()) {
+          console.log(responses);
+        }
+        const fileIds = responses.map((r) => r.id);
         this.createMaterial(fileIds);
       },
-      error: (err) => console.error('Error uploading files', err)
+      error: (err) => console.error('Error uploading files', err),
     });
   }
 
   private createMaterial(fileIds: number[]) {
-    this.materialsService.uploadMaterial(
-      this.courseId,
-      this.newMaterial,
-      fileIds
-    ).subscribe({
-      next: () => {
-        this.closeAddMaterialModal();
-        this.loadMaterials();
-      },
-      error: err => console.error('Error creating material', err)
-    });
+    this.materialsService
+      .uploadMaterial(this.courseId, this.newMaterial, fileIds)
+      .subscribe({
+        next: () => {
+          this.closeAddMaterialModal();
+          this.loadMaterials();
+        },
+        error: (err) => console.error('Error creating material', err),
+      });
   }
 
-
   loadCourse(): void {
-
-    this.coursesService.getCourseById(this.courseId).subscribe(course => {
+    this.coursesService.getCourseById(this.courseId).subscribe((course) => {
       if (!course) {
         console.error(`Course with id ${this.courseId} not found`);
         return;

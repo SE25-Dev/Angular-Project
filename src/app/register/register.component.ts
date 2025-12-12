@@ -9,19 +9,22 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-
   firstName = '';
   lastName = '';
+  email = '';
   username = '';
   password = '';
   repeatPassword = '';
   errorMessage = '';
   successMessage = '';
 
-  constructor(private authService: AuthService,  private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   register() {
     this.errorMessage = '';
@@ -37,6 +40,7 @@ export class RegisterComponent {
       lastName: this.lastName,
       username: this.username,
       password: this.password,
+      email: this.email,
     };
 
     this.authService.register(data).subscribe({
@@ -47,7 +51,7 @@ export class RegisterComponent {
       error: (err) => {
         this.errorMessage = 'Registration failed.';
         console.error(err);
-      }
+      },
     });
   }
 }

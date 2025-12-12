@@ -1,7 +1,8 @@
 <div class="container">
   <h2>Materials</h2>
   <button *ngIf="canEdit" class="add-button" (click)="openAddMaterialModal()">
-  + Add Material
+    <mat-icon>upload_file</mat-icon>
+    Add Material
   </button>
   <div *ngIf="materials.length > 0; else noMaterials">
     <div *ngFor="let material of materials" class="material-item">
@@ -9,7 +10,6 @@
       <p>{{ material.description }}</p>
 
       <div *ngIf="material.files && material.files.length > 0">
-
         <div *ngFor="let file of material.files" class="file-item">
           <img [src]="getFileIcon(file.type)" class="file-icon" />
           <a (click)="downloadFile(file)">{{ file.name }}</a>
@@ -25,12 +25,12 @@
   </ng-template>
 
   <!-- preload icons (hidden) -->
-  <img src="assets/icons/pdf.png" style="display:none" />
-  <img src="assets/icons/image.png" style="display:none" />
-  <img src="assets/icons/doc.png" style="display:none" />
-  <img src="assets/icons/xls.png" style="display:none" />
-  <img src="assets/icons/zip.png" style="display:none" />
-  <img src="assets/icons/file.png" style="display:none" />
+  <img src="assets/icons/pdf.png" style="display: none" />
+  <img src="assets/icons/image.png" style="display: none" />
+  <img src="assets/icons/doc.png" style="display: none" />
+  <img src="assets/icons/xls.png" style="display: none" />
+  <img src="assets/icons/zip.png" style="display: none" />
+  <img src="assets/icons/file.png" style="display: none" />
 </div>
 
 <div class="modal-backdrop" *ngIf="showAddModal">
@@ -39,9 +39,7 @@
 
     <input placeholder="Title" [(ngModel)]="newMaterial.title" />
 
-    <textarea
-      placeholder="Description"
-      [(ngModel)]="newMaterial.description">
+    <textarea placeholder="Description" [(ngModel)]="newMaterial.description">
     </textarea>
 
     <!-- Visibility Toggle -->
@@ -54,7 +52,13 @@
 
     <div class="modal-buttons">
       <button (click)="submitNewMaterial()">Save</button>
-      <button class="cancel" (click)="closeAddMaterialModal()">Cancel</button>
+      <button
+        class="cancel"
+        (keydown.esc)="closeAddMaterialModal($event)"
+        (click)="closeAddMaterialModal()"
+      >
+        Cancel
+      </button>
     </div>
   </div>
 </div>
