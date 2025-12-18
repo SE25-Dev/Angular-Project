@@ -6,7 +6,25 @@
   </button>
   <div *ngIf="materials.length > 0; else noMaterials">
     <div *ngFor="let material of materials" class="material-item">
-      <h3>{{ material.title }}</h3>
+      <div class="material-header">
+        <h3>{{ material.title }}</h3>
+        <div class="action-buttons">
+          <button
+            *ngIf="canEdit"
+            class="edit-button"
+            (click)="openEditMaterialModal(material)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            *ngIf="canEdit"
+            class="delete-button"
+            (click)="deleteMeterial(material.id)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
       <p>{{ material.description }}</p>
 
       <div *ngIf="material.files && material.files.length > 0">
@@ -59,6 +77,51 @@
       >
         Cancel
       </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showEditModal">
+  <div class="modal">
+    <h3>Edit Material</h3>
+
+    <input placeholder="Title" [(ngModel)]="editMaterialData.title" />
+
+    <textarea
+      placeholder="Description"
+      [(ngModel)]="editMaterialData.description"
+    ></textarea>
+
+    <label class="visibility-toggle">
+      <input type="checkbox" [(ngModel)]="editMaterialData.visible" />
+      <span>Visible to Students</span>
+    </label>
+
+    <div
+      *ngIf="
+        editingMaterial &&
+        editingMaterial.files &&
+        editingMaterial.files.length > 0
+      "
+    >
+      <h4>Existing Files:</h4>
+      <div *ngFor="let file of editingMaterial.files" class="file-item">
+        <span>{{ file.name }}</span>
+        <button
+          class="delete-file-btn"
+          (click)="markFileForDeletion(file.id)"
+          [disabled]="deletedFileIds.includes(file.id)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <input type="file" (change)="onEditFilesSelected($event)" multiple />
+
+    <div class="modal-buttons">
+      <button (click)="submitEditedMaterial()">Save</button>
+      <button class="cancel" (click)="closeEditMaterialModal()">Cancel</button>
     </div>
   </div>
 </div>

@@ -2,7 +2,7 @@ import { Component, Input, isDevMode, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MaterialsService } from '../services/materials.service';
-import { Material } from '../models/material';
+import { Material, MaterialData, MaterialUpdateData } from '../models/material';
 import { FileMeta } from '../models/filemeta';
 import { Course } from '../models/course';
 import { CoursesService } from '../services/courses.service';
@@ -25,8 +25,13 @@ export class MaterialsComponent implements OnInit {
   course!: Course;
   canEdit: boolean = false;
   showAddModal = false;
-  newMaterial = { title: '', description: '', visible: true };
+  newMaterial: MaterialData = { title: '', description: '', visible: true };
   selectedFiles = [] as File[];
+  showEditModal = false;
+  editingMaterial: Material | null = null;
+  editMaterialData: MaterialUpdateData = {};
+  editSelectedFiles: File[] = [];
+  deletedFileIds: number[] = [];
 
   constructor(
     private filesService: FilesService,
@@ -115,6 +120,78 @@ export class MaterialsComponent implements OnInit {
     });
   }
 
+  openEditMaterialModal(material: Material) {
+    this.editingMaterial = material;
+    this.editMaterialData = {
+      title: material.title,
+      description: material.description,
+      visible: material.visible,
+    };
+    this.editSelectedFiles = [];
+    this.deletedFileIds = [];
+    this.showEditModal = true;
+  }
+
+  closeEditMaterialModal() {
+    this.showEditModal = false;
+    this.editingMaterial = null;
+    this.editMaterialData = { title: '', description: '', visible: true };
+    this.editSelectedFiles = [];
+    this.deletedFileIds = [];
+  }
+
+  onEditFilesSelected(event: any) {
+    this.editSelectedFiles = Array.from(event.target.files) as File[];
+  }
+
+  markFileForDeletion(fileId: number) {
+    if (!this.deletedFileIds.includes(fileId)) {
+      this.deletedFileIds.push(fileId);
+    }
+  }
+
+  submitEditedMaterial() {
+    if (!this.editingMaterial) return;
+
+    if (this.editSelectedFiles.length === 0) {
+      return this.updateMaterial([]);
+    }
+
+    const uploadRequests = this.editSelectedFiles.map((file) =>
+      this.filesService.uploadFile(file),
+    );
+
+    forkJoin(uploadRequests).subscribe({
+      next: (responses) => {
+        if (isDevMode()) {
+          console.log(responses);
+        }
+        const fileIds = responses.map((r) => r.id);
+        this.updateMaterial(fileIds);
+      },
+      error: (err) => console.error('Error uploading files', err),
+    });
+  }
+
+  private updateMaterial(newFileIds: number[]) {
+    if (!this.editingMaterial) return;
+
+    const updateData = {
+      ...this.editMaterialData,
+      deletedFileIds: this.deletedFileIds,
+      newFileIds: newFileIds,
+    };
+
+    this.materialsService
+      .updateMaterial(this.courseId, this.editingMaterial.id, updateData)
+      .subscribe({
+        next: () => {
+          this.closeEditMaterialModal();
+          this.loadMaterials();
+        },
+        error: (err) => console.error('Error updating material', err),
+      });
+  }
   private createMaterial(fileIds: number[]) {
     this.materialsService
       .uploadMaterial(this.courseId, this.newMaterial, fileIds)
@@ -125,6 +202,15 @@ export class MaterialsComponent implements OnInit {
         },
         error: (err) => console.error('Error creating material', err),
       });
+  }
+
+  deleteMeterial(materialId: number) {
+    this.materialsService.deleteMaterial(this.courseId, materialId).subscribe({
+      next: () => {
+        this.loadMaterials();
+      },
+      error: (err) => console.error('Error deleting material', err),
+    });
   }
 
   loadCourse(): void {
