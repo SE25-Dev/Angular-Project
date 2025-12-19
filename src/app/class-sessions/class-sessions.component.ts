@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ClassSessionsService } from '../services/class-sessions.service';
@@ -8,9 +8,10 @@ import { AuthService } from '../services/auth.service';
 import { CoursesService } from '../services/courses.service';
 import { RaportsService } from '../services/raports.service';
 import { CourseUser } from '../models/courseuser';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { FilesService } from '../services/files.service';
 import { FileMeta } from '../models/filemeta';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-class-sessions',
@@ -24,27 +25,33 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
   classSessions: ClassSession[] = [];
   canEdit: boolean = false;
 
+  // Session Creation
   showAddSessionModal = false;
-  newSession = {
-    topic: '',
-    startingDateTime: '',
-    endingDateTime: '',
-    visible: true,
-  };
+  newSession = { topic: '', startingDateTime: '', endingDateTime: '', visible: true };
+
+  // Raport Modal Data
   students: CourseUser[] = [];
   selectedStudentIds: number[] = [];
   description = '';
   selectedFiles: File[] = [];
-  canSubmit = false;
+  
+  // Modal State
   showModal = false;
   currentSessionId!: number;
+  
+  // EDIT MODE STATE
+  isEditingRaport = false;
+  editingRaportId: number | null = null;
+  existingFiles: FileMeta[] = [];
+  deletedFileIds: number[] = [];
 
   constructor(
     private classSessionsService: ClassSessionsService,
-    private auth: AuthService,
+    private auth: AuthService, // Using private here, but added getter below for template
     private filesService: FilesService,
     private coursesService: CoursesService,
     private raportsService: RaportsService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnChanges(): void {
@@ -60,26 +67,10 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
     this.loadStudents();
   }
 
-  // Teacher / Headteacher actions
-  viewRaports(session: any) {
-    this.raportsService.getRaports(session.id).subscribe({
-      next: (raports) => console.log(raports),
-      error: (err) => console.error(err),
-    });
-  }
-
-  viewPresenceList(session: any) {
-    // this.presenceService.getPresence(session.id).subscribe({
-    //   next: presence => console.log(presence),
-    //   error: err => console.error(err)
-    // });
-  }
-
   loadSessions(): void {
     this.classSessionsService.getClassSessions(this.courseId).subscribe({
       next: (data) => {
         this.classSessions = data;
-        console.log(this.classSessions);
       },
       error: (err) => console.error('Error loading sessions', err),
     });
@@ -87,66 +78,11 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
 
   loadCourse(): void {
     this.coursesService.getCourseById(this.courseId).subscribe((course) => {
-      if (!course) {
-        console.error(`Course with id ${this.courseId} not found`);
-        return;
-      }
-      console.log(course);
+      if (!course) return;
       this.canEdit = this.auth.isUserTeacherInCourse(course);
     });
   }
-  openRaportModal(session: ClassSession) {
-    this.currentSessionId = session.id;
-    this.showModal = true;
-    this.description = '';
-    this.selectedFiles = [];
 
-    const currentUserId = this.auth.getCurrentUserId(); // method from AuthService
-
-    // Automatically include uploader
-    if (currentUserId) {
-      this.selectedStudentIds = [currentUserId];
-    } else {
-      this.selectedStudentIds = [];
-    }
-
-    // Exclude uploader from checkbox list
-    this.students = this.students.filter((s) => s.userId !== currentUserId);
-  }
-
-  openAddSessionModal() {
-    this.showAddSessionModal = true;
-  }
-
-  closeAddSessionModal() {
-    this.showAddSessionModal = false;
-    this.newSession = {
-      topic: '',
-      startingDateTime: '',
-      endingDateTime: '',
-      visible: true,
-    };
-  }
-
-  submitNewSession() {
-    if (
-      !this.newSession.topic ||
-      !this.newSession.startingDateTime ||
-      !this.newSession.endingDateTime
-    )
-      return;
-
-    this.classSessionsService
-      .createClassSession(this.courseId, this.newSession)
-      .subscribe({
-        next: (session) => {
-          this.classSessions.push(session);
-          this.closeAddSessionModal();
-          this.loadSessions();
-        },
-        error: (err) => console.error('Error creating session', err),
-      });
-  }
   loadStudents(): void {
     this.coursesService.getUsersInCourse(this.courseId).subscribe({
       next: (users) =>
@@ -155,72 +91,67 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
     });
   }
 
+  openAddSessionModal() { this.showAddSessionModal = true; }
+  
+  closeAddSessionModal() { 
+      this.showAddSessionModal = false; 
+      this.newSession = { topic: '', startingDateTime: '', endingDateTime: '', visible: true };
+  }
+
+  submitNewSession() {
+      if (!this.newSession.topic || !this.newSession.startingDateTime || !this.newSession.endingDateTime) return;
+      this.classSessionsService.createClassSession(this.courseId, this.newSession).subscribe({
+        next: (session) => {
+          this.classSessions.push(session);
+          this.closeAddSessionModal();
+          this.loadSessions();
+        },
+        error: (err) => console.error('Error creating session', err),
+      });
+  }
+
+
+  openRaportModal(session: ClassSession) {
+    this.currentSessionId = session.id;
+    this.showModal = true;
+    this.isEditingRaport = false;
+    this.editingRaportId = null;
+    this.description = '';
+    this.selectedFiles = [];
+    this.existingFiles = [];
+    this.deletedFileIds = [];
+
+    const currentUserId = this.auth.getCurrentUserId();
+
+    if (currentUserId) {
+      this.selectedStudentIds = [currentUserId];
+    } else {
+      this.selectedStudentIds = [];
+    }
+  }
+
   onFilesSelected(event: any) {
     this.selectedFiles = Array.from(event.target.files) as File[];
   }
 
-  // Student selects/deselects other students
-  toggleStudentSelection(userId: number): void {
-    if (this.selectedStudentIds.includes(userId)) {
-      this.selectedStudentIds = this.selectedStudentIds.filter(
-        (id) => id !== userId,
-      );
+  markFileForDeletion(fileId: number) {
+    if (this.deletedFileIds.includes(fileId)) {
+      // Undo deletion
+      this.deletedFileIds = this.deletedFileIds.filter(id => id !== fileId);
     } else {
-      this.selectedStudentIds.push(userId);
+      // Mark for deletion
+      this.deletedFileIds.push(fileId);
     }
   }
 
-  // Submit raport with files
-  submitRaport(): void {
-    if (!this.selectedStudentIds.length) {
-      alert('Please select at least one student.');
-      return;
+  toggleStudentSelection(userId: number): void {
+    if (this.isEditingRaport) return; 
+
+    if (this.selectedStudentIds.includes(userId)) {
+      this.selectedStudentIds = this.selectedStudentIds.filter((id) => id !== userId);
+    } else {
+      this.selectedStudentIds.push(userId);
     }
-
-    if (!this.currentSessionId) {
-      console.error('No session selected for raport.');
-      return;
-    }
-
-    if (!this.selectedFiles.length) {
-      // no files, just submit raport
-      this.raportsService
-        .submitRaport(
-          this.currentSessionId,
-          this.description,
-          this.selectedStudentIds,
-          [],
-        )
-        .subscribe({
-          next: () => this.closeRaportModal(),
-          error: (err) => console.error(err),
-        });
-      return;
-    }
-
-    // Step 1: upload all files
-    const uploadRequests = this.selectedFiles.map((file) =>
-      this.filesService.uploadFile(file),
-    );
-
-    forkJoin(uploadRequests).subscribe({
-      next: (responses) => {
-        const fileIds = responses.map((f) => f.id);
-        // Step 2: submit raport with uploaded file IDs
-        this.raportsService
-          .submitRaport(
-            this.currentSessionId,
-            this.description,
-            this.selectedStudentIds,
-            fileIds,
-          )
-          .subscribe({
-            next: () => this.closeRaportModal(),
-            error: (err) => console.error('Error submitting raport', err),
-          });
-      },
-      error: (err) => console.error('Error uploading files', err),
-    });
   }
 
   closeRaportModal(): void {
@@ -229,26 +160,105 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
     this.selectedStudentIds = [];
     this.description = '';
     this.selectedFiles = [];
+    this.existingFiles = [];
+    this.deletedFileIds = [];
+    this.isEditingRaport = false;
   }
 
-  getFileIcon(fileType: string): string {
-    console.log('fileType:', fileType);
-    if (fileType.includes('pdf')) {
-      return 'assets/icons/pdf.png';
-    } else if (fileType.includes('image')) {
-      return 'assets/icons/image.png';
-    } else if (fileType.includes('word') || fileType.includes('document')) {
-      return 'assets/icons/doc.png';
-    } else if (fileType.includes('excel') || fileType.includes('sheet')) {
-      return 'assets/icons/xls.png';
-    } else if (fileType.includes('zip') || fileType.includes('rar')) {
-      return 'assets/icons/zip.png';
-    } else {
-      return 'assets/icons/file.png';
+  openEditRaportModal(session: ClassSession) {
+    if (!session.raport) return;
+
+    this.currentSessionId = session.id;
+    this.showModal = true;
+    this.isEditingRaport = true;
+    this.editingRaportId = session.raport.id;
+    
+    this.description = session.raport.description || '';
+    
+    
+    this.existingFiles = session.raport.files ? [...session.raport.files] : [];
+    
+ 
+    console.log("Editing Raport Files:", this.existingFiles);
+
+    this.selectedFiles = []; 
+    this.deletedFileIds = [];
+    if (session.raport.section && session.raport.section.users) {
+        // @ts-ignore
+        this.selectedStudentIds = session.raport.section.users.map((u: any) => u.id);
     }
+
+    this.cdr.detectChanges();
   }
+
+  // --- FIX 2: Correct Payload Keys in Submit ---
+  submitRaport(): void {
+    // Validation: Only require students if creating new
+    if (!this.isEditingRaport && !this.selectedStudentIds.length) {
+      alert('Please select at least one student.');
+      return;
+    }
+
+    const uploadObservables = this.selectedFiles.length > 0 
+        ? this.selectedFiles.map(f => this.filesService.uploadFile(f)) 
+        : [of(null)];
+
+    forkJoin(uploadObservables).subscribe({
+        next: (responses) => {
+            const newFileIds = responses
+                .filter(r => r !== null)
+                .map((r: any) => r.id);
+
+            if (this.isEditingRaport && this.editingRaportId) {
+                // --- UPDATE LOGIC ---
+                this.raportsService.updateRaport(this.editingRaportId, {
+                    description: this.description,
+                    // Sending exact keys required by backend:
+                    deletedFileIds: this.deletedFileIds, 
+                    newFileIds: newFileIds               
+                }).subscribe({
+                    next: () => {
+                        this.closeRaportModal();
+                        this.loadSessions(); 
+                    },
+                    error: (err) => console.error("Error updating raport", err)
+                });
+
+            } else {
+                // --- CREATE LOGIC ---
+                this.raportsService.submitRaport(
+                    this.currentSessionId,
+                    this.description,
+                    this.selectedStudentIds,
+                    newFileIds
+                ).subscribe({
+                    next: () => {
+                        this.closeRaportModal();
+                        this.loadSessions();
+                    },
+                    error: (err) => console.error('Error submitting raport', err),
+                });
+            }
+        },
+        error: (err) => console.error('Error uploading files', err)
+    });
+  }
+
+ getFileIcon(fileType: string | null | undefined): string {
+    if (!fileType) return 'assets/icons/file.png';
+
+    const type = fileType.toLowerCase();
+
+    if (type.includes('pdf')) return 'assets/icons/pdf.png';
+    else if (type.includes('image')) return 'assets/icons/image.png';
+    else if (type.includes('word') || type.includes('document')) return 'assets/icons/doc.png';
+    else if (type.includes('excel') || type.includes('sheet')) return 'assets/icons/xls.png';
+    else if (type.includes('zip') || type.includes('rar')) return 'assets/icons/zip.png';
+    else return 'assets/icons/file.png';
+  }
+  
   downloadFile(file: FileMeta): void {
-    this.filesService.downloadFileRaport(file.id).subscribe({
+      this.filesService.downloadFileRaport(file.id).subscribe({
       next: (data: Blob) => {
         const blob = new Blob([data], { type: file.type });
         const url = window.URL.createObjectURL(blob);
@@ -260,9 +270,21 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
         window.URL.revokeObjectURL(url);
         a.remove();
       },
-      error: (err) => {
-        console.error('Error downloading file', err);
-      },
+      error: (err) => console.error('Error downloading file', err),
     });
+  }
+  
+  viewRaports(session: any) {
+    this.raportsService.getRaports(session.id).subscribe({
+      next: (raports) => console.log(raports),
+      error: (err) => console.error(err),
+    });
+  }
+
+  get currentUserId(): number | null {
+    return this.auth.getCurrentUserId();
+  }
+
+  viewPresenceList(session: any) {
   }
 }

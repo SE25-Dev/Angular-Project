@@ -10,11 +10,17 @@ import { CourseComponent } from './course/course.component';
 
 import { authGuard } from './auth.guard';
 import { isSuperuserGuard } from './is-superuser.guard';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    canActivate: [authGuard], // optional
+  },
   {
     path: 'courses',
     component: CoursesComponent,

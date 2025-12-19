@@ -17,7 +17,7 @@
     </ng-container>
 
     <ng-template #loggedIn>
-      <button class="btn disabled"><mat-icon>notifications</mat-icon></button>
+      <button class="btn" [routerLink]="['/notifications']"><mat-icon>notifications</mat-icon></button>
       <button class="btn" (click)="logout()">Logout</button>
     </ng-template>
   </div>

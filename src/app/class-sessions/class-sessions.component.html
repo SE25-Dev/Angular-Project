@@ -13,20 +13,27 @@
       <p>End: {{ session.endingDateTime | date: "short" }}</p>
       <p *ngIf="!session.visible" class="not-visible">(Hidden)</p>
 
-      <!-- Role-specific actions -->
       <div class="session-actions">
-        <!-- Student view -->
         <ng-container *ngIf="!canEdit">
-          <!-- If raport exists, show description and files -->
-          <div *ngIf="session.raport; else submitRaportButton">
+          
+          <div *ngIf="session.raport; else submitRaportButton" class="raport-container">
+            
+            <div class="raport-header">
+              <h4>My Raport</h4>
+              <span *ngIf="session.raport.section?.status?.name === 'Pending'" class="status-badge pending">
+                Pending
+              </span>
+              <button class="edit-btn" (click)="openEditRaportModal(session)">
+                <mat-icon>edit</mat-icon> Edit
+              </button>
+            </div>
+
             <p>
-              <strong>Raport Description:</strong>
+              <strong>Description:</strong>
               {{ session.raport.description }}
             </p>
 
-            <div
-              *ngIf="session.raport.files && session.raport.files.length > 0"
-            >
+            <div *ngIf="session.raport.files && session.raport.files.length > 0">
               <div *ngFor="let file of session.raport.files" class="file-item">
                 <img [src]="getFileIcon(file.type)" class="file-icon" />
                 <a (click)="downloadFile(file)">{{ file.name }}</a>
@@ -34,13 +41,11 @@
             </div>
           </div>
 
-          <!-- Submit Raport button -->
           <ng-template #submitRaportButton>
             <button (click)="openRaportModal(session)">Submit Raport</button>
           </ng-template>
         </ng-container>
 
-        <!-- Teacher / Headteacher view -->
         <ng-container *ngIf="canEdit">
           <button (click)="viewRaports(session)">View Raports</button>
           <button (click)="viewPresenceList(session)">Presence List</button>
@@ -54,27 +59,27 @@
   <ng-template #noSessions>
     <p class="no-materials">No class sessions available for this course.</p>
   </ng-template>
-  <img src="assets/icons/pdf.png" style="display: none" />
-  <img src="assets/icons/image.png" style="display: none" />
-  <img src="assets/icons/doc.png" style="display: none" />
-  <img src="assets/icons/exl.png" style="display: none" />
-  <img src="assets/icons/zip.png" style="display: none" />
-  <img src="assets/icons/file.png" style="display: none" />
+
+  <div style="display: none">
+    <img src="assets/icons/pdf.png" />
+    <img src="assets/icons/image.png" />
+    <img src="assets/icons/doc.png" />
+    <img src="assets/icons/xls.png" />
+    <img src="assets/icons/zip.png" />
+    <img src="assets/icons/file.png" />
+  </div>
 </div>
-<!-- Move modal OUTSIDE the container -->
+
 <div class="modal-backdrop" *ngIf="showAddSessionModal">
   <div class="modal">
     <h3>Add Class Session</h3>
-
     <input placeholder="Topic" [(ngModel)]="newSession.topic" />
     <input type="datetime-local" [(ngModel)]="newSession.startingDateTime" />
     <input type="datetime-local" [(ngModel)]="newSession.endingDateTime" />
-
     <label class="visible-checkbox">
       <input type="checkbox" [(ngModel)]="newSession.visible" />
       Visible to students
     </label>
-
     <div class="modal-buttons">
       <button (click)="submitNewSession()">Save</button>
       <button class="cancel" (click)="closeAddSessionModal()">Cancel</button>
@@ -84,28 +89,74 @@
 
 <div class="modal-backdrop" *ngIf="showModal">
   <div class="modal">
-    <h3>Submit Raport</h3>
+    <h3>{{ isEditingRaport ? 'Edit Raport' : 'Submit Raport' }}</h3>
 
     <textarea placeholder="Description" [(ngModel)]="description"></textarea>
 
     <div class="students-selection">
-      <h4>Select students with you:</h4>
-      <div *ngFor="let student of students">
-        <label>
-          <input
-            type="checkbox"
-            [value]="student.userId"
-            (change)="toggleStudentSelection(student.userId)"
-          />
-          {{ student.firstName }} {{ student.lastName }}
-        </label>
-      </div>
+      
+      <ng-container *ngIf="!isEditingRaport">
+        <h4>Select students with you:</h4>
+        <ng-container *ngFor="let student of students">
+          <div *ngIf="student.userId !== currentUserId"> 
+              <label>
+              <input
+                  type="checkbox"
+                  [checked]="selectedStudentIds.includes(student.userId)"
+                  (change)="toggleStudentSelection(student.userId)"
+              />
+              {{ student.firstName }} {{ student.lastName }}
+              </label>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="isEditingRaport">
+        <h4>Students in this section:</h4>
+        <div class="static-student-list">
+          
+          <div class="student-chips-container" *ngIf="selectedStudentIds.length > 0; else noStudents">
+            <ng-container *ngFor="let student of students">
+              <div class="student-chip" *ngIf="selectedStudentIds.includes(student.userId) && student.userId !== currentUserId">
+                <mat-icon>person</mat-icon>
+                <span>{{ student.firstName }} {{ student.lastName }}</span>
+              </div>
+            </ng-container>
+          </div>
+
+          <ng-template #noStudents>
+            <p class="text-muted">No other students in this section.</p>
+          </ng-template>
+        </div>
+      </ng-container>
+
     </div>
 
+    <div *ngIf="isEditingRaport && existingFiles.length > 0" class="existing-files">
+        <h4>Existing Files:</h4>
+        <div *ngFor="let file of existingFiles" class="file-item-delete">
+            <div class="file-info">
+               <img [src]="getFileIcon(file.type)" class="file-icon-small" />
+               <span [class.deleted-text]="deletedFileIds.includes(file.id)">
+                   {{ file.name }}
+               </span>
+            </div>
+            
+            <button 
+                class="delete-file-btn" 
+                (click)="markFileForDeletion(file.id)"
+                [class.deleted]="deletedFileIds.includes(file.id)"
+                [title]="deletedFileIds.includes(file.id) ? 'Undo delete' : 'Delete file'">
+                <mat-icon>{{ deletedFileIds.includes(file.id) ? 'restore' : 'delete' }}</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <h4>{{ isEditingRaport ? 'Add New Files:' : 'Attach Files:' }}</h4>
     <input type="file" (change)="onFilesSelected($event)" multiple />
 
     <div class="modal-buttons">
-      <button (click)="submitRaport()">Submit</button>
+      <button (click)="submitRaport()">{{ isEditingRaport ? 'Update' : 'Submit' }}</button>
       <button class="cancel" (click)="closeRaportModal()">Cancel</button>
     </div>
   </div>

@@ -35,6 +35,10 @@ export class RaportsService {
     }).pipe(catchError(this.handleError));
   }
 
+  updateRaport(raportId: number, data: { description: string, deletedFileIds: number[], newFileIds: number[] }): Observable<any> {
+    return this.http.put(`${this.baseUrl}/courses/${raportId}/edit_raport`, data);
+  }
+
   private handleError(error: any): Observable<never> {
     const errorMessage = error.error?.message || `Error Code: ${error.status}\nMessage: ${error.message}`;
     console.error(errorMessage);
