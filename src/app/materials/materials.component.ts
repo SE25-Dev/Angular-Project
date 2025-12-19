@@ -144,11 +144,6 @@ export class MaterialsComponent implements OnInit {
     this.editSelectedFiles = Array.from(event.target.files) as File[];
   }
 
-  markFileForDeletion(fileId: number) {
-    if (!this.deletedFileIds.includes(fileId)) {
-      this.deletedFileIds.push(fileId);
-    }
-  }
 
   submitEditedMaterial() {
     if (!this.editingMaterial) return;
@@ -221,6 +216,16 @@ export class MaterialsComponent implements OnInit {
       }
       this.canEdit = this.auth.isUserTeacherInCourse(course);
     });
+  }
+
+  markFileForDeletion(fileId: number) {
+    if (this.deletedFileIds.includes(fileId)) {
+      // Undo deletion (remove from the list)
+      this.deletedFileIds = this.deletedFileIds.filter(id => id !== fileId);
+    } else {
+      // Mark for deletion
+      this.deletedFileIds.push(fileId);
+    }
   }
 
   getFileIcon(fileType: string): string {

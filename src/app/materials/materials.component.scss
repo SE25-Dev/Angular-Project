@@ -143,9 +143,8 @@ hr {
   z-index: 2000;
 }
 
-/* Modal Container */
 .modal {
-  background: rgba(20, 30, 50, 0.95);
+  background: rgba(20, 30, 50, 0.95); /* Dark Blue Background */
   padding: 25px;
   border-radius: 18px;
   width: 420px;
@@ -153,41 +152,65 @@ hr {
   color: white;
   font-family: "Poppins", "Inter", sans-serif;
   animation: fadeIn 0.2s ease-out;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #16d4c3; /* Teal Title */
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  /* Inputs & Textarea */
+  input,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.08); /* Semi-transparent white */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 15px;
+    font-size: 15px;
+  }
+
+  textarea {
+    height: 80px;
+    resize: none;
+  }
+
+  /* Buttons */
+  button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  button:not(.cancel) {
+    background: #16d4c3;
+    color: white;
+  }
+
+  button.cancel {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
 }
 
-.modal h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #16d4c3;
-  font-size: 22px;
-  font-weight: 700;
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-/* Inputs */
-.modal input,
-.modal textarea {
-  width: 100%;
-  box-sizing: border-box;
-  /* Ensure padding is included in width */
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 12px;
-  border-radius: 10px;
-  color: white;
-  margin-bottom: 15px;
-  font-size: 15px;
-}
-
-.modal textarea {
-  height: 80px;
-  resize: none;
-}
-
-/* Visibility Toggle Row */
+/* Visibility Toggle */
 .visibility-toggle {
   display: flex;
-  flex-wrap: wrap;
-  align-content: center;
+  align-items: center;
   gap: 8px;
   margin-bottom: 25px;
   cursor: pointer;
@@ -195,7 +218,7 @@ hr {
   input[type="checkbox"] {
     width: auto;
     margin-bottom: 0;
-    transform: scale(1.2) translateY(-1px);
+    transform: scale(1.2);
   }
 
   span {
@@ -204,28 +227,95 @@ hr {
   }
 }
 
-/* Buttons */
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
+/* --- 2. FILE DELETION STYLING (Matches Raport Exactly) --- */
+
+/* Container for the list */
+.existing-files {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background: rgba(0, 0, 0, 0.2); /* Darker background block */
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
 }
 
-.modal button {
-  padding: 8px 14px;
-  border-radius: 8px;
+/* Individual File Row */
+.file-item-delete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+/* File Icon + Name */
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+
+  .file-icon-small {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Strikethrough effect */
+.deleted-text {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* Trash/Restore Button */
+.delete-file-btn {
+  background: transparent;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-}
+  color: #ff6b6b; /* Red */
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
 
-.modal button:not(.cancel) {
-  background: #16d4c3;
-  color: white;
-}
+  &:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 4px;
+  }
 
-.modal button.cancel {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
+  /* Green restore state */
+  &.deleted {
+    color: #16d4c3; 
+    
+    &:hover {
+      background: rgba(22, 212, 195, 0.1);
+    }
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 }

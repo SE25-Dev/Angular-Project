@@ -80,7 +80,6 @@
     </div>
   </div>
 </div>
-
 <div class="modal-backdrop" *ngIf="showEditModal">
   <div class="modal">
     <h3>Edit Material</h3>
@@ -103,20 +102,30 @@
         editingMaterial.files &&
         editingMaterial.files.length > 0
       "
+      class="existing-files"
     >
       <h4>Existing Files:</h4>
-      <div *ngFor="let file of editingMaterial.files" class="file-item">
-        <span>{{ file.name }}</span>
+      
+      <div *ngFor="let file of editingMaterial.files" class="file-item-delete">
+        
+        <div class="file-info">
+          <img [src]="getFileIcon(file.type)" class="file-icon-small" />
+          
+          <span [class.deleted-text]="deletedFileIds.includes(file.id)">
+            {{ file.name }}
+          </span>
+        </div>
+
         <button
           class="delete-file-btn"
           (click)="markFileForDeletion(file.id)"
-          [disabled]="deletedFileIds.includes(file.id)"
+          [class.deleted]="deletedFileIds.includes(file.id)"
+          [title]="deletedFileIds.includes(file.id) ? 'Undo delete' : 'Delete file'"
         >
-          <mat-icon>delete</mat-icon>
+          <mat-icon>{{ deletedFileIds.includes(file.id) ? 'restore' : 'delete' }}</mat-icon>
         </button>
       </div>
     </div>
-
     <input type="file" (change)="onEditFilesSelected($event)" multiple />
 
     <div class="modal-buttons">
