@@ -1,0 +1,108 @@
+/* Reusing variables and glassmorphism style from existing project */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.assessment-modal {
+  background: rgba(20, 30, 50, 0.95);
+  color: white;
+  width: 900px; /* Wider for grading table */
+  max-width: 95vw;
+  height: 85vh;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px 25px;
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  h3 { margin: 0; color: #16d4c3; font-size: 22px; }
+  
+  .close-icon {
+    background: transparent; border: none; color: white; cursor: pointer;
+    &:hover { color: #16d4c3; }
+  }
+}
+
+.modal-content-scroll {
+  padding: 25px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Section Card */
+.section-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  h4 { margin: 0; font-size: 18px; color: #16d4c3; }
+}
+
+.raport-content {
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+}
+
+.pending-note {
+  font-size: 12px; color: #ffa500; display: flex; align-items: center; gap: 5px; margin-top: 5px;
+}
+
+.files-grid {
+  display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;
+}
+
+.file-chip {
+  background: rgba(22, 212, 195, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex; align-items: center; gap: 6px;
+  color: #16d4c3; text-decoration: none; font-size: 12px;
+  border: 1px solid rgba(22, 212, 195, 0.2);
+  &:hover { background: rgba(22, 212, 195, 0.2); }
+}
+
+/* Grading Area */
+.grading-list {
+  padding: 15px 20px;
+  
+  h5 { margin-top: 0; margin-bottom: 12px; color: rgba(255,255,255,0.6); font-size: 13px; text-transform: uppercase; letter-spacing: 1px;}
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+  &.pending { background: rgba(255, 165, 0, 0.2); color: #ffa500; }
+  &.approved { background: rgba(22, 212, 195, 0.2); color: #16d4c3; }
+  &.rejected { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+}

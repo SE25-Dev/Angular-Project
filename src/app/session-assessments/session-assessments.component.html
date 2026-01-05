@@ -1,0 +1,79 @@
+<div class="modal-backdrop">
+  <div class="modal assessment-modal">
+    <div class="modal-header">
+      <h3>Session Raports & Grading</h3>
+      <button class="close-icon" (click)="close.emit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+      <p>Loading data...</p>
+    </div>
+
+    <div *ngIf="!loading" class="modal-content-scroll">
+      
+      <div *ngFor="let section of sections" class="section-card">
+        
+        <div class="section-header">
+          <div class="header-top">
+            <h4>{{ section.name }}</h4>
+            <span class="status-badge" 
+                  [ngClass]="section.status?.name?.toLowerCase()">
+              {{ section.status?.name || 'Unknown' }}
+            </span>
+          </div>
+
+          <div class="raport-content" *ngIf="section.raports && section.raports.length > 0">
+            <div *ngFor="let raport of section.raports">
+              <p class="description">
+                <strong>Raport:</strong> {{ raport.description || 'No description provided.' }}
+              </p>
+              
+              <div class="files-grid" *ngIf="raport.files && raport.files.length > 0">
+                <a 
+                   *ngFor="let file of raport.files" 
+                   (click)="downloadFile(file)" 
+                   class="file-chip"
+                   style="cursor: pointer;">
+                   
+                   <img [src]="getFileIcon(file.type)" width="16">
+                   <span>{{ file.name }}</span>
+                </a>
+                </div>
+
+              <p *ngIf="!raport.files?.length && section.status?.name === 'Pending'" class="pending-note">
+                <mat-icon>lock</mat-icon> Files are hidden until status is approved/processed.
+              </p>
+            </div>
+          </div>
+          
+          <div *ngIf="!section.raports?.length" class="no-raport">
+             <p>No raport submitted for this section.</p>
+          </div>
+        </div>
+
+        <div class="grading-list">
+          <h5>Grading</h5>
+          <div *ngIf="getSectionUsers(section).length === 0" class="no-students">
+              No students in this section.
+          </div>
+          
+          <app-student-grade 
+              *ngFor="let student of getSectionUsers(section)"
+              #gradeComponent
+              [student]="student"
+              [classSessionId]="sessionId"
+              [assessment]="getAssessmentForStudent(student.id)"
+              (save)="onSaveAssessment($event, gradeComponent)">
+          </app-student-grade>
+        </div>
+
+      </div>
+
+      <div *ngIf="sections.length === 0" class="empty-state">
+         No sections found for this session.
+      </div>
+    </div>
+  </div>
+</div>
