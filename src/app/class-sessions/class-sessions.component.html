@@ -161,3 +161,17 @@
     </div>
   </div>
 </div>
+
+<app-session-assessments
+  *ngIf="showAssessmentModal"
+  [courseId]="courseId"
+  [sessionId]="selectedSessionIdForAssessment"
+  (close)="closeAssessmentModal()">
+</app-session-assessments>
+
+<app-session-presence
+  *ngIf="showPresenceModal"
+  [courseId]="courseId"
+  [sessionId]="selectedSessionIdForPresence"
+  (close)="closePresenceModal()">
+</app-session-presence>

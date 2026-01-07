@@ -1,0 +1,56 @@
+<div class="modal-backdrop">
+  <div class="modal presence-modal">
+    <div class="modal-header">
+      <h3>Presence List</h3>
+      <button class="close-icon" (click)="close.emit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+      <p>Loading students...</p>
+    </div>
+
+    <div *ngIf="!loading" class="modal-content-scroll">
+      
+      <div class="actions-bar">
+        <button class="text-btn" (click)="markAll(true)">Mark All Present</button>
+        <span class="divider">|</span>
+        <button class="text-btn" (click)="markAll(false)">Mark All Absent</button>
+      </div>
+
+      <div class="student-list">
+        <div 
+          *ngFor="let row of students" 
+          class="student-row"
+          [class.present]="row.present"
+          (click)="togglePresence(row)">
+          
+          <div class="student-info">
+            <span class="name">{{ row.student.firstName }} {{ row.student.lastName }}</span>
+            <span class="username">{{ row.student.username }}</span>
+          </div>
+
+          <div class="checkbox-container">
+            <div class="custom-checkbox" [class.checked]="row.present">
+              <mat-icon *ngIf="row.present">check</mat-icon>
+            </div>
+            <span class="status-text">{{ row.present ? 'Present' : 'Absent' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="students.length === 0" class="empty-state">
+        No students enrolled in this course.
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="save-btn" (click)="save()" [disabled]="saving || loading">
+        <span *ngIf="!saving">Save Changes</span>
+        <span *ngIf="saving">Saving...</span>
+      </button>
+    </div>
+  </div>
+</div>

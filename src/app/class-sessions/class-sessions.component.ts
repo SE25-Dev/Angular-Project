@@ -12,11 +12,13 @@ import { forkJoin, of } from 'rxjs';
 import { FilesService } from '../services/files.service';
 import { FileMeta } from '../models/filemeta';
 import { ChangeDetectorRef } from '@angular/core';
+import { SessionAssessmentsComponent } from '../session-assessments/session-assessments.component';
+import { SessionPresenceComponent } from '../session-presence/session-presence.component';
 
 @Component({
   selector: 'app-class-sessions',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, SessionAssessmentsComponent,SessionPresenceComponent],
   templateUrl: './class-sessions.component.html',
   styleUrl: './class-sessions.component.scss',
 })
@@ -44,6 +46,11 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
   editingRaportId: number | null = null;
   existingFiles: FileMeta[] = [];
   deletedFileIds: number[] = [];
+
+  showAssessmentModal = false;
+  selectedSessionIdForAssessment!: number;
+  showPresenceModal = false;
+  selectedSessionIdForPresence!: number;
 
   constructor(
     private classSessionsService: ClassSessionsService,
@@ -274,17 +281,25 @@ export class ClassSessionsComponent implements OnInit, OnChanges {
     });
   }
   
-  viewRaports(session: any) {
-    this.raportsService.getRaports(session.id).subscribe({
-      next: (raports) => console.log(raports),
-      error: (err) => console.error(err),
-    });
+  viewRaports(session: ClassSession) {
+    this.selectedSessionIdForAssessment = session.id;
+    this.showAssessmentModal = true;
+  }
+  
+  closeAssessmentModal() {
+    this.showAssessmentModal = false;
   }
 
   get currentUserId(): number | null {
     return this.auth.getCurrentUserId();
   }
 
-  viewPresenceList(session: any) {
+  viewPresenceList(session: ClassSession) {
+    this.selectedSessionIdForPresence = session.id;
+    this.showPresenceModal = true;
+  }
+  
+  closePresenceModal() {
+    this.showPresenceModal = false;
   }
 }
