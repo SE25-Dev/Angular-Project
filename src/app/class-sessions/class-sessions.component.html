@@ -34,7 +34,7 @@
             </p>
 
             <div *ngIf="session.raport.files && session.raport.files.length > 0">
-              <div *ngFor="let file of session.raport.files" class="file-item">
+              <div *ngFor="let file of session.raport.files" class="file-item" style="cursor:pointer">
                 <img [src]="getFileIcon(file.type)" class="file-icon" />
                 <a (click)="downloadFile(file)">{{ file.name }}</a>
               </div>
@@ -44,6 +44,23 @@
           <ng-template #submitRaportButton>
             <button (click)="openRaportModal(session)">Submit Raport</button>
           </ng-template>
+
+          <div *ngIf="session.grade != null" class="assessment-container">
+            <div class="assessment-header">
+              <mat-icon>grade</mat-icon>
+              <h4>Teacher Evaluation</h4>
+            </div>
+            
+            <div class="grade-row">
+              <span class="label">Grade:</span>
+              <span class="grade-value">{{ session.grade }} / 5</span>
+            </div>
+
+            <div *ngIf="session.feedback" class="feedback-row">
+              <span class="label">Feedback:</span>
+              <p class="feedback-text">{{ session.feedback }}</p>
+            </div>
+          </div>
         </ng-container>
 
         <ng-container *ngIf="canEdit">

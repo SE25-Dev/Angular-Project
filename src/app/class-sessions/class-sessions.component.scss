@@ -265,6 +265,79 @@
     width: 100%;
 }
 
+.assessment-container {
+  margin-top: 10px; /* Reduced spacing */
+  padding: 10px 12px; /* More compact padding */
+  background: rgba(22, 212, 195, 0.08); /* Subtle teal tint to match theme */
+  border: 1px solid rgba(22, 212, 195, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.assessment-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px; /* Tighter spacing */
+  color: #16d4c3; /* Matches global title color */
+  
+  h4 {
+    margin: 0;
+    font-size: 0.95rem; /* Smaller header */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  mat-icon {
+    font-size: 18px; /* Smaller icon */
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.grade-row {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  
+  .grade-value {
+    font-weight: 700;
+    color: white;
+    margin-left: 8px;
+    background: #16d4c3; /* Solid pill for high contrast */
+    padding: 1px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 5px rgba(22, 212, 195, 0.3);
+  }
+}
+
+.feedback-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+  }
+
+  .feedback-text {
+    background: rgba(0, 0, 0, 0.15); /* Darker, cleaner background */
+    padding: 8px;
+    border-radius: 6px;
+    margin: 0;
+    font-size: 0.85rem; /* Compact text */
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.85);
+    border-left: 2px solid rgba(22, 212, 195, 0.5); /* Nice accent line */
+  }
+}
+
 .raport-header {
     display: flex;
     justify-content: space-between;

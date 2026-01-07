@@ -16,6 +16,50 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
+  gap: 20px; /* Add gap for spacing on smaller screens */
+}
+
+/* NEW: Search Container Styles */
+.search-container {
+  position: relative;
+  flex: 1; /* Takes up available space between title and buttons */
+  max-width: 400px; /* Don't let it get too wide */
+  margin: 0 20px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 10px 10px 10px 40px; /* Left padding for the icon */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-container input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-container input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(22, 212, 195, 0.5); /* Matching your theme color */
+  box-shadow: 0 0 10px rgba(22, 212, 195, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
 
 .title {

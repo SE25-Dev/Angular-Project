@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon'; // Ensure you have this for the search icon
 import { AuthService } from '../services/auth.service';
 import { CoursesService } from '../services/courses.service';
 import { RouterLink } from '@angular/router';
@@ -16,9 +16,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent implements OnInit, OnDestroy {
-  courses: Course[] = [];
+  private allCourses: Course[] = []; 
+  courses: Course[] = []; 
+  
   isSuperuser = false;
   private coursesSubscription?: Subscription;
+  
+  searchTerm: string = '';
 
   showModal = false;
   enteredPassword = '';
@@ -34,10 +38,40 @@ export class CoursesComponent implements OnInit, OnDestroy {
     }
 
     this.coursesSubscription = this.coursesService.courses$.subscribe(c => {
-      this.courses = c;
+      // 1. Store original data
+      // 2. Sort alphabetically by default
+      this.allCourses = c.sort((a, b) => a.title.localeCompare(b.title));
+      
+      this.filterCourses();
     });
 
     this.coursesService.loadCourses().subscribe();
+  }
+
+  filterCourses(): void {
+    if (!this.searchTerm) {
+      this.courses = [...this.allCourses];
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase();
+
+    // Primary Search: Filter by Course Title
+    const titleMatches = this.allCourses.filter(course => 
+      course.title.toLowerCase().includes(term)
+    );
+    if (titleMatches.length > 0) {
+      this.courses = titleMatches;
+    } else {
+      // Secondary Search: If NO titles matched, search by Teacher Name
+      this.courses = this.allCourses.filter(course => 
+  
+        course.teachers.some(teacher => 
+          teacher.firstName.toLowerCase().includes(term) || 
+          teacher.lastName.toLowerCase().includes(term)
+        )
+      );
+    }
   }
 
   onActionClick(event: Event, course: Course): void {
@@ -48,7 +82,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Open modal
     this.courseToEnroll = course;
     this.enteredPassword = '';
     this.showModal = true;

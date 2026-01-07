@@ -7,5 +7,7 @@ export interface ClassSession {
   endingDateTime: Date;
   visible: boolean;
   courseId: number;
-  raport: Raport;
+  raport?: Raport; 
+  grade?: number;
+  feedback?: string;
 }

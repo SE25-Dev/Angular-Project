@@ -22,10 +22,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.notificationsService.getNotifications().subscribe(); 
     this.notificationsSubscription = this.notificationsService.notifications$.subscribe(
       data => {
-        // Sort by newest first
-        this.notifications = data.sort((a, b) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        this.notifications = data
+          .filter(n => !n.isRead) 
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       }
     );
   }
@@ -35,10 +34,11 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   acceptInvitation(notification: Notification): void {
-    // FIXED: Use markAsRead with 'accept'
     this.notificationsService.markAsRead(notification.id, 'accept').subscribe({
       next: () => {
         if (isDevMode()) console.log('Invitation accepted:', notification);
+    
+        this.removeNotificationFromList(notification.id);
       },
       error: (err) => {
         if (isDevMode()) console.error('Failed to accept:', err);
@@ -47,19 +47,23 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   rejectInvitation(notification: Notification): void {
-    // FIXED: Use markAsRead with 'deny' (Changed from 'reject' to match Service/Backend)
     this.notificationsService.markAsRead(notification.id, 'deny').subscribe({
       next: () => {
         if (isDevMode()) console.log('Invitation denied:', notification);
+        this.removeNotificationFromList(notification.id);
       },
       error: (err) => {
         if (isDevMode()) console.error('Failed to deny:', err);
       }
     });
   }
-  
-  // Optional: Helper to clear "Info" notifications manually if you add a button later
+  private removeNotificationFromList(id: number): void {
+    this.notifications = this.notifications.filter(n => n.id !== id);
+  }
+
   markAsRead(notification: Notification): void {
-     this.notificationsService.markAsRead(notification.id, 'read').subscribe();
+     this.notificationsService.markAsRead(notification.id, 'read').subscribe({
+        next: () => this.removeNotificationFromList(notification.id)
+     });
   }
 }
